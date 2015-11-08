@@ -38,7 +38,11 @@ func main() {
 							return
 						}
 						resized := imaging.Thumbnail(img, width, height, imaging.CatmullRom)
-						err := imaging.Save(resized,"resized.jpg")
+						resizeName := "resized.jpg"
+						if len(c.Args()) == 3 {
+							resizeName = c.Args()[2]
+						}
+						err := imaging.Save(resized,resizeName)
 						if err != nil {
 							color.Red("Error saving image")
 						} else {
