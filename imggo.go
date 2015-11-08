@@ -60,7 +60,32 @@ func main() {
 			Aliases: []string{"bl"},
 			Usage: "Adds a blur to the image",
 			Action: func(c *cli.Context) {
-				//BLUR IMAGE
+				if len(c.Args()) < 2 {
+					fmt.Println("usage: image_name blur_amount [output_name]")
+				} else {
+					img, err := imaging.Open(c.Args()[0])
+					if err != nil {
+						color.Red("Error opening Image")
+						return
+					}
+
+					blurAmt,er := strconv.ParseFloat(c.Args()[1], 64)
+					if er != nil {
+						color.Red("Invalid arguments")
+						return
+					}
+					dstImage := imaging.Blur(img, blurAmt)
+					imgName := "blur.jpg"
+					if len(c.Args()) == 3 {
+						imgName = c.Args()[2]
+					}
+					saveErr := imaging.Save(dstImage, imgName)
+					if saveErr != nil {
+						color.Red("Error saving image")
+					} else {
+						color.Green("Image blurred")
+					}
+				}
 			},
 		},
 		{
