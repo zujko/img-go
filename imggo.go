@@ -3,8 +3,11 @@ package main
 import (
 	"os"
 	"fmt"
+	"strings"
+	"strconv"
 	"github.com/codegangsta/cli"
 	"github.com/fatih/color"
+	"github.com/disintegration/imaging"
 )
 
 func main() {
@@ -16,12 +19,34 @@ func main() {
 		{
 			Name: "resize",
 			Aliases: []string{"r"},
-			Usage: "resizes the image",
+			Usage: "Resizes the image",
 			Action: func(c *cli.Context) {
 				if(len(c.Args()) >= 2) {
-					//RESIZE IMAGE
+					img, err := imaging.Open(c.Args()[0])
+					if err != nil {
+						color.Red("Error opening image")
+					} else {
+						size := strings.Split(c.Args()[1],"x")
+						width,we := strconv.Atoi(size[0])
+						height,he := strconv.Atoi(size[1])
+						if (we != nil || he != nil) {
+							color.Red("Invalid dimension arguments")
+							return
+						}
+						if(width > 1000 || height > 1000) {
+							color.Red("Dimensions are too large")
+							return
+						}
+						resized := imaging.Thumbnail(img, width, height, imaging.CatmullRom)
+						err := imaging.Save(resized,"resized.jpg")
+						if err != nil {
+							color.Red("Error saving image")
+						} else {
+							color.Green("Image resized")
+						}
+					}
 				} else {
-					fmt.Println("usage: <image name> <size>")
+					fmt.Println("usage: image_name size [output_name]")
 				}
 			},
 
