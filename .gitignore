@@ -23,6 +23,8 @@ _testmain.go
 *.test
 *.prof
 
+img-go
+
 # GO15VENDOREXPERIMENT flag specifics
 vendor/**
 !vendor/manifest
